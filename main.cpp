@@ -1,5 +1,3 @@
-
-
 #include <vector>
 #include <string>
 #include <fstream>
@@ -15,33 +13,10 @@
 #include "robot.h"
 using namespace std;
 
-// https://www.geeksforgeeks.org/number-of-mismatching-bits-in-the-binary-representation-of-two-integers/
-
 
 vector<int> generate_robot_position(string values);
 
-// void printbasemap(vector<std::vector<string>> vec){
-//     for (int i = 0; i < vec.size(); i++)
-//     {
-//         for (int j = 0; j < vec[i].size(); j++)
-//         {
-//             cout << vec[i][j] << " ";
-//         }
-//         cout << "\n";
-//     }
-// }
 
-// void printvector(vector<std::vector<long double>> vec)
-// {
-//     for (int i = 0; i < vec.size(); i++)
-//     {
-//         for (int j = 0; j < vec[i].size(); j++)
-//         {
-//             cout << vec[i][j] << " ";
-//         }
-//         cout << "\n";
-//     }
-// }
 
 int main(int argc, char *argv[])
 {
@@ -78,47 +53,54 @@ int main(int argc, char *argv[])
         // matrix m(basemap);
         // m.printbasemap();
         
-        cout << "Original matrix \n\n";
+        // cout << "Original matrix \n\n";
         // printbasemap(basemap);
 
         matrix m= matrix(basemap);
         robot r = robot(basemap.at(0).size(),basemap.size());
-        m.printbasemap();
+        // m.printbasemap();
 
-        printf("\n");
+        // printf("\n");
         double sensory_error = atof(argv[2]);
-        cout<<"Sensory error given: "<<sensory_error<<"\n";
+        // cout<<"Sensory error given: "<<sensory_error<<"\n";
 
         r.generate_sensory_error(sensory_error);
-        // cout<<argv[3]<<"this is the argument";
-        //if (((A >> i) & 1) != ((B >> i) & 1)) {
-        //    count++;
-        //}
 
         vector<double> sensory_error_vector;
         r.generate_robot_map();
         vector<vector<long double>> trans = r.generate_transitivity_matrix(basemap);
-        m.printvector(trans);
-        cout<<" \n inititsal vector";
+        // cout<<" \n Best wishes \n";
+        // m.printvector(trans);
+        // cout<<" \n Initial vector";
         vector<long double> intitalp = r.initial_probability_table(basemap);
+        // cout<<"\n J1 \n";
 
         vector<long double> J1 = m.multiply_matrix(trans,intitalp);
+
         vector<long double> Jn = J1;
         for(int g = 3;g<argc;g++){
 
-        cout<<" argument: "<<argv[g]<<"--------------------\n";
-        cout<<"this is next \n";
+        // cout<<" argument: "<<argv[g]<<"--------------------\n";
         
         vector<long double> bitdif=r.generate_objectivity_matrix(basemap,argv[g]);
+        for(int i=0;i<bitdif.size();i++){
+            // cout<<bitdif.at(i)<<" ";
+        }
+        // cout<<" \n";
         //J1
-        cout<<"Before Estimations: \n";
+        // cout<<"Before Estimations: \n";
         vector<long double> before_esimation_probablities = m.multiply_vector(bitdif,Jn);
-        int next_position = r.next_state(before_esimation_probablities);
-        cout<<"\n\n The next state is "<< next_position <<" \n\n";
+        vector<int> next_position = r.next_state(before_esimation_probablities);
+        // cout<<"\n\n The next state is "<< next_position <<" \n\n";
+        for(int n=0;n<next_position.size();n++){
+            cout<<" "<<next_position[n];
+        }
+        cout<<" \n";
         vector<long double> Jnext = m.multiply_matrix(trans, r.get_estimation_probablities());
         for(int i=0;i<Jnext.size();i++){
-            cout<<Jnext.at(i)<<" ";
+            // cout<<Jnext.at(i)<<" ";
         }
+        r.clear_estimation_probablities();
         Jn=Jnext;
         }
 
@@ -170,27 +152,3 @@ int main(int argc, char *argv[])
     return 0;
 }
 
-/*
- Your code for multiplication of the matrices is wrong. Instead of:
-
-for (int i = 0; i < a; i++)
-{
-   for (int j = 0; j < d; j++)
-   {
-      Mat3[i][j] = Mat1[i][j] * Mat1[i][j];
-   }
-}
-You need:
-
-for (int i = 0; i < a; i++)
-{
-   for (int j = 0; j < d; j++)
-   {
-      Mat3[i][j] = 0;
-      for (int k = 0; k < c; k++)
-      {
-         Mat3[i][j] += Mat1[i][k] * Mat2[k][j];
-      }
-   }
-}
-*/

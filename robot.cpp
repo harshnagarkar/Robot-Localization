@@ -19,11 +19,11 @@ void robot::generate_robot_map()
         for (int j = 0; j < row_length; j++)
         {
             row.push_back(count);
-            cout << count << " ";
+            // cout << count << " ";
             count++;
         }
         robot_map.push_back(row);
-        cout << "\n";
+        // cout << "\n";
     }
 }
 
@@ -34,7 +34,7 @@ int robot::total_bitwise_difference(string A, string B)
     for (int i = 0; i < 4; i++)
     {
 
-        if (A[i]!=B[i])
+        if (A[i] != B[i])
         {
             count++;
         }
@@ -46,29 +46,29 @@ int robot::total_bitwise_difference(string A, string B)
 
 string robot::encode_strings(string directions)
 {
-    string value = "1111";
+    string value = "0000";
     if (directions.find("N") != string::npos)
     {
-        value[0] = '0';
+        value[0] = '1';
     }
     if (directions.find("S") != string::npos)
     {
-        value[1] = '0';
+        value[1] = '1';
     }
     if (directions.find("W") != string::npos)
     {
-        value[2] = '0';
+        value[2] = '1';
     }
     if (directions.find("E") != string::npos)
     {
-        value[3] = '0';
+        value[3] = '1';
     }
     return value;
 }
 
 vector<long double> robot::generate_objectivity_matrix(vector<vector<string>> vec, string comparison_string)
 {
-    cout << " objectivity ";
+    // cout << " objectivity ";
     vector<long double> Jt;
     string comparison = encode_strings(comparison_string);
     for (int i = 0; i < vec.size(); i++)
@@ -84,28 +84,38 @@ vector<long double> robot::generate_objectivity_matrix(vector<vector<string>> ve
     return Jt;
 }
 
-int robot::next_state(vector<long double> before_estimation_probablities)
+vector<int> robot::next_state(vector<long double> before_estimation_probablities)
 {
     vector<long double> estimation_probablities;
     long double sum_of_elems = 0.000;
-    cout<<"Estimation";
+    // cout << "Estimation";
     for (int i = 0; i < before_estimation_probablities.size(); i++)
     {
         sum_of_elems += before_estimation_probablities.at(i);
     }
     long double max = 0.000;
-    int state = 0;
+    vector<int> state;
     for (int i = 0; i < before_estimation_probablities.size(); i++)
     {
         if ((before_estimation_probablities.at(i) / sum_of_elems) > max)
         {
             max = (before_estimation_probablities.at(i) / sum_of_elems);
-            state = i;
+            // state.push_back(i);
         }
+
         estimation_probablities.push_back(before_estimation_probablities.at(i) / sum_of_elems);
-        cout<<"\n"<<(before_estimation_probablities.at(i)/sum_of_elems);
+        // cout << "\n" << std::showpoint << std::fixed << setprecision(12) << (before_estimation_probablities.at(i) / sum_of_elems);
         estprobablities.push_back(before_estimation_probablities.at(i) / sum_of_elems);
     }
+    for (int i = 0; i < before_estimation_probablities.size(); i++)
+    {
+        if (max == estimation_probablities[i])
+        {
+            state.push_back(i);
+        }
+    }
+    cout<< std::showpoint << std::fixed << setprecision(12) << (max);
+
     // cout<<" sum of elements"<<sum_of_elems;
     return state;
 }
@@ -113,6 +123,11 @@ int robot::next_state(vector<long double> before_estimation_probablities)
 vector<long double> robot::get_estimation_probablities()
 {
     return estprobablities;
+}
+
+void robot::clear_estimation_probablities()
+{
+    estprobablities = {};
 }
 std::vector<std::vector<long double>> robot::generate_transitivity_matrix(vector<vector<string>> vec)
 {
@@ -139,7 +154,7 @@ std::vector<std::vector<long double>> robot::generate_transitivity_matrix(vector
                 for (int n = 0; n < marked_values.size(); n++)
                 {
                     // cout << " \n postion choosen [" << marked_values[n] << "," << counter << " ] " << j << " Iternation \n";
-                    
+
                     transitivity_matrix.at(marked_values[n]).at(counter) = 1.0 / (long double)marked_values.size();
 
                     // for (int i = 0; i < transitivity_matrix.size(); i++)// {
@@ -173,7 +188,7 @@ vector<int> robot::generate_robot_position(string values, int current_position[2
             if (i == 0)
             {
                 //North
-                cout << (current_position[0] - 1) << (current_position[1]);
+                // cout << (current_position[0] - 1) << (current_position[1]);
                 // cout<<"\n  Robot map"<<robot_map.at(current_position[0]-1).at(current_position[1])<<" \n";
                 positions.push_back(robot_map.at(current_position[0] - 1).at(current_position[1]));
             }
@@ -198,7 +213,7 @@ vector<int> robot::generate_robot_position(string values, int current_position[2
                 // cout<<"\n  Robot map: "<<robot_map.at(current_position[0]).at(current_position[1] + 1)<<" \n";
                 // cout << (current_position[0]) << (current_position[1]+1);
             }
-            cout << " \n";
+            // cout << " \n";
             // printf(" position: %d \n",i);
         }
     }
@@ -217,21 +232,22 @@ vector<long double> robot::initial_probability_table(vector<vector<string>> vec)
             {
                 long double val = 1.000000 / valid;
                 intialvector.push_back(val);
-                cout << " " << (val);
+                // cout << " " << (val);
             }
             else
             {
                 intialvector.push_back(0);
-                cout << " " << 0.0;
+                // cout << " " << 0.0;
             }
         }
     }
+    // cout << "\n";
     return intialvector;
 }
 
 void robot::generate_sensory_error(double sensory_error)
 {
-    cout << "Senory error: \n\n";
+    // cout << "Senory error: \n\n";
 
     for (int j = 0; j <= 4; j++)
     {
@@ -239,8 +255,8 @@ void robot::generate_sensory_error(double sensory_error)
         sensory_error_vector.push_back(error);
 
         // cout << std::showpoint << std::fixed << setprecision(4) << error;
-        cout << error;
-        cout << "\n";
+        // cout << error;
+        // cout << "\n";
     }
-    cout << "\n\n";
+    // cout << "\n\n";
 }

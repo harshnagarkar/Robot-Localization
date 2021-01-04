@@ -33,8 +33,9 @@ public:
   vector<long double> initial_probability_table(vector<vector<string>> vec);
   vector<long double> generate_objectivity_matrix(vector<vector<string>> basemap, string comparison_string);
   string encode_strings(string directions);
-  int next_state(vector<long double> before_estimation_probablities);
+  vector<int> next_state(vector<long double> before_estimation_probablities);
   vector<long double> get_estimation_probablities();
+  void clear_estimation_probablities();
 };
 
 #endif

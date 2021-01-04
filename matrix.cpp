@@ -56,10 +56,10 @@ vector<long double> matrix::multiply_matrix(vector<std::vector<long double>> A,
                 // cout<<" "<<row.at(k)<<"*"<<column.at(k)<<" ";
                 sum=sum+row.at(k)*column.at(k);
             }
-            cout<<sum;
+            // cout<<sum;
             res.push_back(sum);
             sum=0;
-            cout<<" \n";
+            // cout<<" \n";
     }
     return res;
 }
